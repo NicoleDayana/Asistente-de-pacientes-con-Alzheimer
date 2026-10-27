@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="Asistente de pacientes con Alzheimer">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f5f57"/>
+      <stop offset="0.6" stop-color="#0a3f3a"/>
+      <stop offset="1" stop-color="#082a27"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.2" cy="0.1" r="0.9">
+      <stop offset="0" stop-color="#17857a" stop-opacity="0.75"/>
+      <stop offset="1" stop-color="#17857a" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="warm" cx="0.9" cy="0.9" r="0.7">
+      <stop offset="0" stop-color="#b45f2a" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#b45f2a" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <rect width="1200" height="630" fill="url(#warm)"/>
+
+  <g transform="translate(96 148)">
+    <rect width="72" height="72" rx="20" fill="#f4f7f5" fill-opacity="0.12"/>
+    <path d="M36 12 58 20.5v15C58 46.5 49.8 54.6 36 58 22.2 54.6 14 46.5 14 35.5v-15L36 12Z"
+          fill="none" stroke="#9fe0d5" stroke-width="3.6" stroke-linejoin="round"/>
+    <path d="M24 36h6l3.4-8.6 5 15.6 3.3-7h6"
+          fill="none" stroke="#f7e3d0" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <text x="196" y="196" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="30" font-weight="600"
+        fill="#9fe0d5" letter-spacing="6">PROYECTO DE MODELAMIENTO</text>
+
+  <text x="96" y="300" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="76" font-weight="700"
+        fill="#ffffff">Asistente de pacientes</text>
+  <text x="96" y="388" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="76" font-weight="700"
+        fill="#ffffff">con <tspan fill="#9fe0d5">Alzheimer</tspan></text>
+
+  <text x="96" y="452" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="28"
+        fill="#d7ece7">Brazalete de apoyo y memoria · recordatorios, ubicación segura</text>
+  <text x="96" y="492" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="28"
+        fill="#d7ece7">y contacto directo con el cuidador.</text>
+
+  <g transform="translate(760 150)">
+    <rect width="350" height="330" rx="34" fill="#fdfbf7" fill-opacity="0.96"/>
+    <rect x="30" y="34" width="120" height="14" rx="7" fill="#b9cfc9"/>
+    <text x="30" y="120" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="58" font-weight="700" fill="#0f5f57">08:00</text>
+    <rect x="30" y="150" width="290" height="86" rx="16" fill="#ffffff" stroke="#ddd6c9"/>
+    <rect x="30" y="150" width="7" height="86" rx="4" fill="#b45f2a"/>
+    <text x="52" y="186" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="22" font-weight="700" fill="#14232b">Tomar la pastilla azul</text>
+    <text x="52" y="214" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="19" fill="#6b7d85">Recordatorio confirmado</text>
+    <rect x="30" y="256" width="290" height="52" rx="14" fill="#0f5f57"/>
+    <text x="52" y="289" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="20" font-weight="600" fill="#ffffff">Llamar a mi cuidador</text>
+  </g>
+</svg>
