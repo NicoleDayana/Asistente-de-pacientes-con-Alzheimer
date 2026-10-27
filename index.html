@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="claro">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Asistente de pacientes con Alzheimer · Brazalete de apoyo y memoria</title>
+<meta name="description" content="Proyecto de modelamiento de un asistente para pacientes con Alzheimer: brazalete 3D, recordatorios accesibles y vínculo permanente con el cuidador." />
+<meta name="theme-color" content="#0f5f57" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Asistente de pacientes con Alzheimer" />
+<meta property="og:description" content="Brazalete de apoyo y memoria: recordatorios, ubicación segura y contacto directo con el cuidador." />
+<meta property="og:image" content="./assets/img/social-card.svg" />
+<link rel="icon" href="./assets/img/favicon.svg" type="image/svg+xml" />
+<script>
+  /* Aplica el modo de letra grande antes del primer pintado para evitar parpadeos. */
+  try {
+    if (localStorage.getItem('assist-alzheimer:letra-grande') === 'true') {
+      document.documentElement.dataset.theme = 'grande';
+    }
+  } catch (error) { /* almacenamiento no disponible */ }
+</script>
+<link rel="stylesheet" href="./assets/css/styles.css" />
+<script type="importmap">
+{
+  "imports": {
+    "three": "./assets/vendor/three/three.module.min.js"
+  }
+}
+</script>
+</head>
+<body>
+<svg class="icon-sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+  <symbol id="i-clock" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="8.6"/>
+    <path d="M12 7.2V12l3.1 2"/>
+  </symbol>
+  <symbol id="i-compass" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="8.6"/>
+    <path d="m15.6 8.4-2.1 5.1-5.1 2.1 2.1-5.1z"/>
+  </symbol>
+  <symbol id="i-users" viewBox="0 0 24 24">
+    <circle cx="9.2" cy="8.4" r="3.3"/>
+    <path d="M3.4 19.4c0-3.1 2.6-5.3 5.8-5.3s5.8 2.2 5.8 5.3"/>
+    <circle cx="17.3" cy="9.1" r="2.5"/>
+    <path d="M16.6 14.6c2.3.4 3.9 2.3 3.9 4.8"/>
+  </symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24">
+    <path d="M7.2 3.6h2.6l1.5 3.9-2 1.3a11.6 11.6 0 0 0 5.9 5.9l1.3-2 3.9 1.5v2.6a2.3 2.3 0 0 1-2.5 2.3A17 17 0 0 1 4.9 6.1a2.3 2.3 0 0 1 2.3-2.5Z"/>
+  </symbol>
+  <symbol id="i-home" viewBox="0 0 24 24">
+    <path d="M4 10.6 12 4l8 6.6V20a1 1 0 0 1-1 1h-4.4v-6.3H9.4V21H5a1 1 0 0 1-1-1z"/>
+  </symbol>
+  <symbol id="i-repeat" viewBox="0 0 24 24">
+    <path d="M4.2 11.4a7.8 7.8 0 0 1 13.2-5.1l2.2 2.2"/>
+    <path d="M19.9 4.6v3.9h-3.9"/>
+    <path d="M19.8 12.6a7.8 7.8 0 0 1-13.2 5.1L4.4 15.5"/>
+    <path d="M4.1 19.4v-3.9h3.9"/>
+  </symbol>
+</svg>
+
+<a class="skip-link" href="#contenido">Saltar al contenido principal</a>
+
+<noscript>
+  <p class="noscript-note">
+    El visor 3D y el prototipo interactivo necesitan JavaScript. Puedes descargar el modelo
+    desde <a href="./assets/models/brazalete.stl" download>brazalete.stl</a>.
+  </p>
+</noscript>
+
+<header class="site-header" id="inicio">
+  <div class="wrap header-inner">
+    <a class="brand" href="#inicio" aria-label="Ir al inicio">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32" role="presentation" focusable="false">
+          <path d="M16 3.5 27 8v8.2c0 6.2-4.5 10.6-11 12.3-6.5-1.7-11-6.1-11-12.3V8L16 3.5Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>
+          <path d="M10.5 16.2h3l1.8-4.4 2.6 8 1.7-3.6h2.9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <span class="brand-text">
+        <strong>Assist Alzheimer</strong>
+        <small>Brazalete de apoyo y memoria</small>
+      </span>
+    </a>
+
+    <nav class="site-nav" aria-label="Navegación principal">
+      <ul>
+        <li><a href="#proyecto">Proyecto</a></li>
+        <li><a href="#brazalete">Brazalete 3D</a></li>
+        <li><a href="#prototipo">Prototipo</a></li>
+        <li><a href="#accesibilidad">Accesibilidad</a></li>
+      </ul>
+    </nav>
+
+    <button class="btn btn-ghost btn-small text-toggle" type="button" id="textToggle" aria-pressed="false">
+      <span aria-hidden="true">A+</span> <span class="text-toggle-label">Letra grande</span>
+    </button>
+  </div>
+</header>
+
+<main id="contenido">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="dot" aria-hidden="true"></span> Proyecto de modelamiento · 2026</p>
+        <h1>Un asistente que sostiene la <em>memoria</em> y la calma.</h1>
+        <p class="lead">
+          Diseñamos un <strong>brazalete</strong> y una interfaz sencilla para personas con Alzheimer
+          y sus cuidadores: recordatorios claros, ubicación segura y un botón que siempre
+          conecta con alguien de confianza.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#prototipo">Probar el prototipo</a>
+          <a class="btn btn-outline" href="#brazalete">Ver el brazalete en 3D</a>
+        </div>
+        <dl class="hero-stats">
+          <div><dt>Módulos</dt><dd>3</dd></div>
+          <div><dt>Modelo 3D</dt><dd>STL</dd></div>
+          <div><dt>Coste para el usuario</dt><dd>$ 0</dd></div>
+        </dl>
+      </div>
+
+      <div class="hero-art" aria-hidden="true">
+        <div class="orb orb-a"></div>
+        <div class="orb orb-b"></div>
+        <div class="hero-card">
+          <p class="hero-card-time" id="heroClock">--:--</p>
+          <p class="hero-card-label">Es hora de tu pastilla azul</p>
+          <div class="hero-card-chip">Recordatorio activo</div>
+          <div class="hero-card-rings">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROYECTO -->
+  <section class="section" id="proyecto">
+    <div class="wrap">
+      <header class="section-head">
+        <p class="eyebrow">El proyecto</p>
+        <h2>Tres apoyos concretos para el día a día</h2>
+        <p class="section-sub">
+          El Alzheimer afecta la memoria reciente, la orientación y la autonomía. El asistente
+          reduce la carga del cuidador sin infantilizar a la persona: información simple,
+          siempre disponible y sin pantallas complicadas.
+        </p>
+      </header>
+
+      <div class="cards">
+        <article class="card">
+          <div class="card-icon" aria-hidden="true"><svg class="icon"><use href="#i-clock"></use></svg></div>
+          <h3>Recordatorios con contexto</h3>
+          <p>Medicación, citas e hidratación con mensajes en letra grande y voz, repetibles tantas veces como sea necesario.</p>
+          <ul class="card-list">
+            <li>Hora + nombre del medicamento</li>
+            <li>Confirmación con un solo toque</li>
+            <li>Aviso al cuidador si no hay respuesta</li>
+          </ul>
+        </article>
+
+        <article class="card card-accent">
+          <div class="card-icon" aria-hidden="true"><svg class="icon"><use href="#i-compass"></use></svg></div>
+          <h3>Orientación y ubicación segura</h3>
+          <p>El brazalete comparte la ubicación solo cuando la persona la necesita o cuando se aleja de una zona segura.</p>
+          <ul class="card-list">
+            <li>Zona segura configurable</li>
+            <li>Botón «Estoy perdido» con datos del hogar</li>
+            <li>Sin mapas ni menús complejos</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <div class="card-icon" aria-hidden="true"><svg class="icon"><use href="#i-users"></use></svg></div>
+          <h3>Vínculo con el cuidador</h3>
+          <p>Un panel para la familia con la rutina del día, el historial de recordatorios y un canal directo de contacto.</p>
+          <ul class="card-list">
+            <li>Vista compartida de la rutina</li>
+            <li>Llamada a un toque</li>
+            <li>Notas de voz de personas conocidas</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- BRAZALETE 3D -->
+  <section class="section section-alt" id="brazalete">
+    <div class="wrap">
+      <header class="section-head">
+        <p class="eyebrow">Modelo 3D</p>
+        <h2>El brazalete, pieza por pieza</h2>
+        <p class="section-sub">
+          Arrastra para girar, usa la rueda o los botones para acercarte. El modelo se carga
+          directamente en el navegador: no requiere plugins ni servidores externos.
+        </p>
+      </header>
+
+      <div class="viewer-shell">
+        <div class="viewer-stage" id="viewerStage">
+          <canvas id="braceletCanvas" aria-label="Modelo 3D interactivo del brazalete" role="img"></canvas>
+
+          <div class="viewer-loader" id="viewerLoader" role="status" aria-live="polite">
+            <div class="spinner" aria-hidden="true"></div>
+            <p>Cargando modelo 3D… <span id="viewerProgress">0 %</span></p>
+          </div>
+
+          <div class="viewer-fallback" id="viewerFallback" hidden>
+            <h3>No pudimos mostrar el modelo 3D</h3>
+            <p>Tu navegador no tiene WebGL activo. Puedes descargar el modelo y abrirlo en cualquier visor STL.</p>
+            <a class="btn btn-primary" href="./assets/models/brazalete.stl" download>Descargar brazalete.stl</a>
+          </div>
+
+          <div class="viewer-hint" aria-hidden="true">Arrastra para girar · Rueda para acercar</div>
+        </div>
+
+        <aside class="viewer-panel">
+          <h3>Controles</h3>
+          <div class="viewer-controls" role="group" aria-label="Controles del modelo 3D">
+            <button class="btn btn-outline btn-small" type="button" id="btnRotate" aria-pressed="true">Rotación automática</button>
+            <button class="btn btn-outline btn-small" type="button" id="btnWireframe" aria-pressed="false">Ver estructura</button>
+            <button class="btn btn-outline btn-small" type="button" id="btnReset">Centrar vista</button>
+          </div>
+
+          <dl class="specs">
+            <div><dt>Archivo</dt><dd>brazalete.stl</dd></div>
+            <div><dt>Formato</dt><dd>STL binario · 120 000 caras</dd></div>
+            <div><dt>Peso</dt><dd>≈ 5,8 MB</dd></div>
+            <div><dt>Medidas</dt><dd>1,90 × 1,35 × 0,87</dd></div>
+            <div><dt>Uso</dt><dd>Impresión 3D / revisión</dd></div>
+          </dl>
+
+          <a class="btn btn-primary btn-block" href="./assets/models/brazalete.stl" download>Descargar modelo STL</a>
+
+          <p class="viewer-note">
+            Consejo de impresión: el archivo viene sin unidades y mide 1,90 × 1,35 × 0,87,
+            es decir, está en metros. Si tu laminador trabaja en milímetros, escálalo ×1000
+            (unos 190 mm de ancho) y usa soportes en las zonas curvas.
+          </p>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROTOTIPO -->
+  <section class="section" id="prototipo">
+    <div class="wrap">
+      <header class="section-head">
+        <p class="eyebrow">Prototipo interactivo</p>
+        <h2>La pantalla que vería la persona</h2>
+        <p class="section-sub">
+          Una demostración funcional del asistente: todo se ejecuta en tu navegador y tus
+          recordatorios se guardan solo en este dispositivo.
+        </p>
+      </header>
+
+      <div class="demo-grid">
+        <div class="device" aria-label="Prototipo del asistente">
+          <div class="device-notch" aria-hidden="true"></div>
+
+          <div class="device-screen">
+            <div class="device-top">
+              <div>
+                <p class="device-date" id="demoDate">—</p>
+                <p class="device-time" id="demoClock">--:--</p>
+              </div>
+              <div class="device-battery" aria-hidden="true">
+                <span class="battery-shell"><span class="battery-level"></span></span>
+                <small>Brazalete conectado</small>
+              </div>
+            </div>
+
+            <p class="device-greeting" id="demoGreeting">Hola</p>
+
+            <div class="next-reminder" id="nextReminder">
+              <p class="next-label">Siguiente recordatorio</p>
+              <p class="next-title">Añade tu primer recordatorio</p>
+              <p class="next-time">Usa el panel de la derecha</p>
+            </div>
+
+            <div class="device-actions">
+              <button class="big-btn" type="button" id="btnCall">
+                <svg class="icon" aria-hidden="true"><use href="#i-phone"></use></svg>
+                Llamar a mi cuidador
+              </button>
+              <button class="big-btn" type="button" id="btnWhere">
+                <svg class="icon" aria-hidden="true"><use href="#i-home"></use></svg>
+                ¿Dónde estoy?
+              </button>
+              <button class="big-btn big-btn-soft" type="button" id="btnRepeat">
+                <svg class="icon" aria-hidden="true"><use href="#i-repeat"></use></svg>
+                Repetir la última indicación
+              </button>
+            </div>
+
+            <div class="device-overlay" id="deviceOverlay" role="dialog" aria-modal="true" aria-labelledby="overlayTitle" hidden>
+              <div class="device-overlay-card">
+                <p class="overlay-eyebrow" id="overlayEyebrow">Aviso</p>
+                <p class="overlay-title" id="overlayTitle">Título</p>
+                <p class="overlay-text" id="overlayText">Descripción</p>
+                <button class="big-btn" type="button" id="overlayClose">Entendido</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="demo-panel">
+          <div class="panel-block">
+            <div class="panel-head">
+              <h3>Rutina de hoy</h3>
+              <span class="pill" id="reminderCount">0 pendientes</span>
+            </div>
+
+            <ul class="reminder-list" id="reminderList" aria-live="polite"></ul>
+
+            <form class="reminder-form" id="reminderForm" autocomplete="off">
+              <div class="field">
+                <label for="reminderTitle">Recordatorio</label>
+                <input id="reminderTitle" name="title" type="text" placeholder="Tomar la pastilla azul" maxlength="60" required />
+              </div>
+              <div class="field field-time">
+                <label for="reminderTime">Hora</label>
+                <input id="reminderTime" name="time" type="time" required />
+              </div>
+              <button class="btn btn-primary" type="submit">Añadir</button>
+            </form>
+            <p class="form-help">Los recordatorios se guardan en tu navegador (localStorage).</p>
+          </div>
+
+          <div class="panel-block panel-soft">
+            <h3>Panel del cuidador</h3>
+            <ul class="check-list">
+              <li>Recibe un aviso si un recordatorio no se confirma en 15 minutos.</li>
+              <li>Puede editar la rutina desde su teléfono, sin tocar el brazalete.</li>
+              <li>Ve el historial del día y las notas de voz reproducidas.</li>
+            </ul>
+            <button class="btn btn-outline btn-small" type="button" id="btnDemoReset">Reiniciar demostración</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACCESIBILIDAD -->
+  <section class="section section-alt" id="accesibilidad">
+    <div class="wrap">
+      <header class="section-head">
+        <p class="eyebrow">Accesibilidad</p>
+        <h2>Diseñado para personas mayores, no para premios de diseño</h2>
+        <p class="section-sub">
+          Cada decisión del proyecto viene de una restricción real de quien convive con Alzheimer.
+        </p>
+      </header>
+
+      <div class="two-col">
+        <div class="acc-list">
+          <div class="acc-item">
+            <span class="acc-num" aria-hidden="true">01</span>
+            <div>
+              <h3>Contraste y tamaño</h3>
+              <p>Texto mínimo de 18 px, contraste AA y un botón de «letra grande» que aumenta toda la interfaz al 125 %.</p>
+            </div>
+          </div>
+          <div class="acc-item">
+            <span class="acc-num" aria-hidden="true">02</span>
+            <div>
+              <h3>Una acción por pantalla</h3>
+              <p>Sin menús anidados ni gestos ocultos: botones grandes, etiquetas literales y respuesta inmediata.</p>
+            </div>
+          </div>
+          <div class="acc-item">
+            <span class="acc-num" aria-hidden="true">03</span>
+            <div>
+              <h3>Navegación con teclado</h3>
+              <p>Foco visible, enlace para saltar al contenido y etiquetas ARIA en el visor 3D y en los paneles.</p>
+            </div>
+          </div>
+          <div class="acc-item">
+            <span class="acc-num" aria-hidden="true">04</span>
+            <div>
+              <h3>Movimiento opcional</h3>
+              <p>La rotación automática del modelo se desactiva si el sistema pide reducir el movimiento.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="tech-card">
+          <h3>Construido sin dependencias de servidor</h3>
+          <p>El sitio es 100 % estático y se publica con GitHub Pages. Todos los recursos se sirven desde el propio repositorio.</p>
+          <ul class="tech-list">
+            <li><strong>HTML + CSS + JS</strong> sin frameworks ni build.</li>
+            <li><strong>Three.js</strong> incluido localmente para el visor STL.</li>
+            <li><strong>Import maps</strong> nativos del navegador.</li>
+            <li><strong>localStorage</strong> para la rutina de la demo.</li>
+          </ul>
+          <p class="tech-foot">Rutas relativas: funciona en <code>usuario.github.io/repositorio/</code> y en local.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <div>
+      <p class="footer-brand">Asistente de pacientes con Alzheimer</p>
+      <p class="footer-text">Modelamiento de un brazalete de apoyo y de una interfaz accesible para personas con Alzheimer y sus cuidadores.</p>
+    </div>
+    <nav aria-label="Enlaces del pie de página">
+      <ul>
+        <li><a href="https://github.com/NicoleDayana/Asistente-de-pacientes-con-Alzheimer">Repositorio</a></li>
+        <li><a href="./assets/models/brazalete.stl" download>Modelo STL</a></li>
+        <li><a href="#inicio">Volver arriba</a></li>
+      </ul>
+    </nav>
+  </div>
+  <p class="footer-note">Hecho con cuidado · Este prototipo no sustituye la valoración médica profesional.</p>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script type="module" src="./assets/js/viewer.js"></script>
+<script src="./assets/js/app.js" defer></script>
+</body>
+</html>
